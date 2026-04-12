@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Cyborg Football — a synthwave arcade cabinet game built solo in Python/Pygame. Freelance case study." />
+  <title>Cyborg Football — Freelance Case Study</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            base: { DEFAULT: '#0c0518', deeper: '#06020f' },
+            panel: '#160a2d',
+            pink: '#ff1078',
+            cyan: '#00e6ff',
+            green: '#00ffc8',
+            purple: '#b43cff',
+            ink: { DEFAULT: '#e6e1ff', muted: '#9a92c0', dim: '#6e6690' },
+          },
+          fontFamily: {
+            display: ['"Space Grotesk"', 'system-ui', 'sans-serif'],
+            body: ['Inter', 'system-ui', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
+          },
+        },
+      },
+    };
+  </script>
+
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    body {
+      background: radial-gradient(ellipse at top, #1a0a3a 0%, #0c0518 45%, #06020f 100%);
+      background-attachment: fixed;
+    }
+    .grid-bg {
+      background-image:
+        linear-gradient(rgba(180, 60, 255, 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(180, 60, 255, 0.08) 1px, transparent 1px);
+      background-size: 48px 48px;
+    }
+    .glow-pink { text-shadow: 0 0 24px rgba(255, 16, 120, 0.55), 0 0 48px rgba(255, 16, 120, 0.25); }
+    .glow-cyan { text-shadow: 0 0 20px rgba(0, 230, 255, 0.6), 0 0 40px rgba(0, 230, 255, 0.25); }
+    .glow-green { text-shadow: 0 0 20px rgba(0, 255, 200, 0.55), 0 0 40px rgba(0, 255, 200, 0.2); }
+    .glow-border {
+      box-shadow: 0 0 0 1px rgba(255, 16, 120, 0.25), 0 0 32px rgba(255, 16, 120, 0.12),
+        inset 0 0 32px rgba(180, 60, 255, 0.04);
+    }
+    .glow-border-cyan {
+      box-shadow: 0 0 0 1px rgba(0, 230, 255, 0.22), 0 0 24px rgba(0, 230, 255, 0.1);
+    }
+    .screenshot-slot {
+      background: linear-gradient(135deg, rgba(22, 10, 45, 0.95), rgba(12, 5, 24, 0.95));
+    }
+    .nav-backdrop { backdrop-filter: blur(12px); }
+    /* Give code tags inline styling without repeating classes */
+    .prose-code code {
+      color: #00e6ff;
+      background: rgba(0, 230, 255, 0.08);
+      padding: 0 0.35em;
+      border-radius: 4px;
+      font-family: '"JetBrains Mono"', ui-monospace, monospace;
+      font-size: 0.85em;
+    }
+  </style>
+</head>
+
+<body class="font-body text-ink min-h-screen antialiased prose-code">
+
+  <!-- NAV -->
+  <nav class="fixed top-0 left-0 right-0 z-50 nav-backdrop bg-base/70 border-b border-pink/10">
+    <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+      <a href="#top" class="font-display font-bold text-ink text-lg tracking-tight">
+        <span class="text-pink glow-pink">CYBORG</span><span class="text-ink">FOOTBALL</span>
+      </a>
+      <div class="hidden md:flex gap-8 text-sm text-ink-muted">
+        <a href="#problem" class="hover:text-cyan transition-colors">Problem</a>
+        <a href="#role" class="hover:text-cyan transition-colors">Role</a>
+        <a href="#features" class="hover:text-cyan transition-colors">Features</a>
+        <a href="#architecture" class="hover:text-cyan transition-colors">Architecture</a>
+        <a href="#outcome" class="hover:text-cyan transition-colors">Outcome</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section id="top" class="relative overflow-hidden grid-bg pt-32 pb-32 md:pt-40 md:pb-40">
+    <div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-base pointer-events-none"></div>
+    <div class="relative max-w-6xl mx-auto px-6">
+      <p class="text-cyan font-mono text-xs md:text-sm mb-8 tracking-[0.3em] uppercase flex items-center gap-3">
+        <span class="inline-block w-8 h-px bg-cyan"></span>
+        Case Study / Arcade Cabinet Game
+      </p>
+      <h1 class="font-display text-5xl md:text-7xl lg:text-8xl font-bold mb-8 leading-[0.95]">
+        <span class="block text-ink">CYBORG</span>
+        <span class="block text-pink glow-pink">FOOTBALL</span>
+      </h1>
+      <p class="text-xl md:text-2xl text-ink-muted max-w-3xl mb-12 leading-relaxed">
+        A synthwave arcade cabinet game engineered for a physical football-throwing experience. Built solo, end-to-end, from architecture to hardware handoff.
+      </p>
+      <div class="flex flex-wrap items-center gap-x-8 gap-y-6">
+        <div>
+          <p class="text-ink-dim text-xs font-mono tracking-widest uppercase mb-2">Freelance / 2026</p>
+          <p class="text-ink text-lg">By <span class="text-cyan font-semibold">Sheikh Abdullah Bin Zahid</span></p>
+        </div>
+        <span class="hidden md:inline-block w-px h-12 bg-ink-dim/30"></span>
+        <div>
+          <p class="text-ink-dim text-xs font-mono tracking-widest uppercase mb-2">Client</p>
+          <p class="text-ink text-lg">Aethagon</p>
+        </div>
+        <span class="hidden md:inline-block w-px h-12 bg-ink-dim/30"></span>
+        <div>
+          <p class="text-ink-dim text-xs font-mono tracking-widest uppercase mb-2">Engagement</p>
+          <p class="text-ink text-lg">Solo, end-to-end</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- AT A GLANCE -->
+  <section class="relative py-14 border-y border-pink/10 bg-base/50">
+    <div class="max-w-6xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8">
+      <div>
+        <p class="text-ink-dim text-xs font-mono tracking-widest uppercase mb-2">Role</p>
+        <p class="text-ink text-lg font-semibold">Solo engineer</p>
+      </div>
+      <div>
+        <p class="text-ink-dim text-xs font-mono tracking-widest uppercase mb-2">Stack</p>
+        <p class="text-ink text-lg font-semibold">Python / Pygame</p>
+      </div>
+      <div>
+        <p class="text-ink-dim text-xs font-mono tracking-widest uppercase mb-2">Platform</p>
+        <p class="text-ink text-lg font-semibold">Windows cabinet</p>
+      </div>
+      <div>
+        <p class="text-ink-dim text-xs font-mono tracking-widest uppercase mb-2">Scope</p>
+        <p class="text-ink text-lg font-semibold">End-to-end game</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROBLEM -->
+  <section id="problem" class="py-24 md:py-32">
+    <div class="max-w-4xl mx-auto px-6">
+      <p class="text-pink font-mono text-xs tracking-[0.3em] uppercase mb-4">01 / The Brief</p>
+      <h2 class="font-display text-3xl md:text-5xl font-bold mb-8 text-ink leading-tight">
+        The client needed a custom game for a physical football-throwing cabinet.
+      </h2>
+      <div class="space-y-6 text-lg text-ink-muted leading-relaxed">
+        <p>
+          Aethagon is building a coin-operated arcade cabinet where players throw real footballs at a touchscreen LCD. The hardware was in progress — IR touch frame, USB arcade buttons, dual HDMI displays — but they needed game software that could drive all of it reliably in a 24/7 venue setting.
+        </p>
+        <p>
+          The brief called for three distinct game modes with different pacing, an arcade-style Hall of Fame leaderboard, operator controls for volume and display configuration, and a visual identity strong enough to draw a crowd from across a venue. Every value that might need to be tuned later had to be configurable without touching code.
+        </p>
+        <p>
+          Most importantly: the game software had to integrate with physical hardware being built in parallel by a separate firmware team, without locking them into a specific wire protocol. The software needed to land first; the hardware team needed an integration contract they could wire against independently.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ROLE & APPROACH -->
+  <section id="role" class="py-24 md:py-32 border-t border-pink/10 bg-gradient-to-b from-transparent via-panel/20 to-transparent">
+    <div class="max-w-5xl mx-auto px-6">
+      <p class="text-pink font-mono text-xs tracking-[0.3em] uppercase mb-4">02 / My Role</p>
+      <h2 class="font-display text-3xl md:text-5xl font-bold mb-12 text-ink leading-tight">
+        Solo engineer, architect, and technical lead.
+      </h2>
+
+      <div class="grid md:grid-cols-2 gap-8">
+        <div class="p-8 rounded-lg bg-panel/40 glow-border">
+          <div class="text-cyan font-mono text-xs tracking-widest uppercase mb-3">Architecture</div>
+          <p class="text-ink-muted leading-relaxed">
+            Designed an 11-state finite state machine, a hardware-agnostic input abstraction layer, and a config-driven gameplay system with ~320 lines of tunable constants and zero magic numbers in state files.
+          </p>
+        </div>
+        <div class="p-8 rounded-lg bg-panel/40 glow-border">
+          <div class="text-cyan font-mono text-xs tracking-widest uppercase mb-3">Game implementation</div>
+          <p class="text-ink-muted leading-relaxed">
+            Built all three game modes from design through polish — solo timed Hall of Fame, 2-player versus with cross-hit scoring, and rapid-fire with shrinking zones — plus the leaderboard, milestone celebrations, and operator menu.
+          </p>
+        </div>
+        <div class="p-8 rounded-lg bg-panel/40 glow-border">
+          <div class="text-cyan font-mono text-xs tracking-widest uppercase mb-3">Hardware integration</div>
+          <p class="text-ink-muted leading-relaxed">
+            Implemented the production input layer: USB arcade button encoder support (<code>JOYBUTTONDOWN</code>, <code>JOYHATMOTION</code>, hot-plug recovery), IR touch frame coordinate mapping, and dual-display compositing across two 1920×1080 LCDs.
+          </p>
+        </div>
+        <div class="p-8 rounded-lg bg-panel/40 glow-border">
+          <div class="text-cyan font-mono text-xs tracking-widest uppercase mb-3">Technical handoff</div>
+          <p class="text-ink-muted leading-relaxed">
+            Wrote the hardware integration contract, asset delivery specification, and full setup guide. Peer-to-peer documentation for a competent firmware team — interfaces, event semantics, calibration, and gotchas. No hand-holding.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TECH STACK -->
+  <section class="py-24 md:py-32">
+    <div class="max-w-5xl mx-auto px-6">
+      <p class="text-pink font-mono text-xs tracking-[0.3em] uppercase mb-4">03 / Tech Stack</p>
+      <h2 class="font-display text-3xl md:text-5xl font-bold mb-12 text-ink leading-tight">
+        Chosen for reliability over novelty.
+      </h2>
+
+      <div class="flex flex-wrap gap-3 mb-16">
+        <span class="px-4 py-2 rounded-full bg-panel/60 border border-pink/30 text-ink-muted font-mono text-sm">Python 3.11</span>
+        <span class="px-4 py-2 rounded-full bg-panel/60 border border-pink/30 text-ink-muted font-mono text-sm">Pygame CE 2.6</span>
+        <span class="px-4 py-2 rounded-full bg-panel/60 border border-cyan/30 text-ink-muted font-mono text-sm">OpenCV</span>
+        <span class="px-4 py-2 rounded-full bg-panel/60 border border-cyan/30 text-ink-muted font-mono text-sm">pyserial</span>
+        <span class="px-4 py-2 rounded-full bg-panel/60 border border-green/30 text-ink-muted font-mono text-sm">pygame.joystick</span>
+        <span class="px-4 py-2 rounded-full bg-panel/60 border border-green/30 text-ink-muted font-mono text-sm">HID touch</span>
+        <span class="px-4 py-2 rounded-full bg-panel/60 border border-purple/30 text-ink-muted font-mono text-sm">JSON persistence</span>
+        <span class="px-4 py-2 rounded-full bg-panel/60 border border-purple/30 text-ink-muted font-mono text-sm">Windows 10/11</span>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-8">
+        <div>
+          <h3 class="font-display text-ink font-bold mb-3 text-lg">Why Pygame CE</h3>
+          <p class="text-ink-muted text-sm leading-relaxed">
+            Rock-solid 2D rendering, first-class Windows support, zero deployment overhead, and predictable frame pacing for a 60 fps fullscreen game. No launcher, no runtime, no licensing headache.
+          </p>
+        </div>
+        <div>
+          <h3 class="font-display text-ink font-bold mb-3 text-lg">Why OpenCV</h3>
+          <p class="text-ink-muted text-sm leading-relaxed">
+            Pygame has no native video playback. OpenCV's <code>VideoCapture</code> decodes an MP4 frame-by-frame into Pygame surfaces for the attract-mode idle video — lightweight, codec-flexible, no GStreamer required.
+          </p>
+        </div>
+        <div>
+          <h3 class="font-display text-ink font-bold mb-3 text-lg">Why pygame.joystick</h3>
+          <p class="text-ink-muted text-sm leading-relaxed">
+            Any USB HID gamepad encoder works out of the box with zero drivers. Hot-plug handled via <code>JOYDEVICEADDED</code> / <code>JOYDEVICEREMOVED</code>. Vendor-independent — the firmware team isn't locked into one board.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES / SCREENSHOTS -->
+  <section id="features" class="py-24 md:py-32 border-t border-pink/10 bg-gradient-to-b from-transparent via-panel/20 to-transparent">
+    <div class="max-w-6xl mx-auto px-6">
+      <p class="text-pink font-mono text-xs tracking-[0.3em] uppercase mb-4">04 / Key Features</p>
+      <h2 class="font-display text-3xl md:text-5xl font-bold mb-16 text-ink leading-tight">
+        Three distinct modes, one shared arcade feel.
+      </h2>
+
+      <div class="space-y-20">
+        <!-- MODE A -->
+        <div class="grid md:grid-cols-2 gap-12 items-center">
+          <div>
+            <p class="text-cyan font-mono text-xs tracking-widest uppercase mb-3">Mode A</p>
+            <h3 class="font-display text-2xl md:text-3xl font-bold mb-4 text-ink">Hall of Fame — solo timed</h3>
+            <p class="text-ink-muted leading-relaxed mb-4">
+              60-second countdown, six full-screen target zones, 1 point per hit. Milestone celebrations fire at scores 21, 35, 63, and 77 with a 2.5-second overlay that pauses the timer. Scores at or above 77 qualify for a 3-letter arcade-style name entry, top 10 saved to JSON.
+            </p>
+            <ul class="text-ink-muted text-sm space-y-2">
+              <li class="flex gap-3"><span class="text-cyan mt-0.5">▸</span> Full-screen 2×3 grid with impact-glow feedback at the exact hit point</li>
+              <li class="flex gap-3"><span class="text-cyan mt-0.5">▸</span> Robot sprite sprinting across the HUD as score increases</li>
+              <li class="flex gap-3"><span class="text-cyan mt-0.5">▸</span> Persistent leaderboard across sessions</li>
+            </ul>
+          </div>
+          <div class="relative aspect-video rounded-lg overflow-hidden screenshot-slot glow-border">
+            <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+              <div class="text-pink/50 font-mono text-xs tracking-widest uppercase mb-2">Screenshot</div>
+              <div class="text-ink-dim font-mono text-xs">./screenshots/mode-a.png</div>
+            </div>
+            <img src="./screenshots/mode-a.png" alt="Mode A gameplay" class="absolute inset-0 w-full h-full object-cover" onerror="this.style.display='none'" />
+          </div>
+        </div>
+
+        <!-- MODE B -->
+        <div class="grid md:grid-cols-2 gap-12 items-center">
+          <div class="md:order-2">
+            <p class="text-cyan font-mono text-xs tracking-widest uppercase mb-3">Mode B</p>
+            <h3 class="font-display text-2xl md:text-3xl font-bold mb-4 text-ink">Versus — 2 players, simultaneous</h3>
+            <p class="text-ink-muted leading-relaxed mb-4">
+              Split-screen with P1 on top and P2 on bottom, separated by a 100-pixel dead zone. Both players throw at the same time. The twist: hitting the opponent's half awards them the point — a cross-hit mechanic that punishes bad aim and rewards stealing territory.
+            </p>
+            <ul class="text-ink-muted text-sm space-y-2">
+              <li class="flex gap-3"><span class="text-cyan mt-0.5">▸</span> 60-second shared timer, one point per hit regardless of zone</li>
+              <li class="flex gap-3"><span class="text-cyan mt-0.5">▸</span> Result screen shows winner, loser, or tie</li>
+              <li class="flex gap-3"><span class="text-cyan mt-0.5">▸</span> Designed for loud, competitive play</li>
+            </ul>
+          </div>
+          <div class="relative aspect-video rounded-lg overflow-hidden screenshot-slot glow-border md:order-1">
+            <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+              <div class="text-pink/50 font-mono text-xs tracking-widest uppercase mb-2">Screenshot</div>
+              <div class="text-ink-dim font-mono text-xs">./screenshots/mode-b.png</div>
+            </div>
+            <img src="./screenshots/mode-b.png" alt="Mode B gameplay" class="absolute inset-0 w-full h-full object-cover" onerror="this.style.display='none'" />
+          </div>
+        </div>
+
+        <!-- MODE C -->
+        <div class="grid md:grid-cols-2 gap-12 items-center">
+          <div>
+            <p class="text-cyan font-mono text-xs tracking-widest uppercase mb-3">Mode C</p>
+            <h3 class="font-display text-2xl md:text-3xl font-bold mb-4 text-ink">Rapid Fire — survive the shrink</h3>
+            <p class="text-ink-muted leading-relaxed mb-4">
+              45-second timer that bleeds toward zero. Hitting any zone adds +0.5 seconds. Six circular zones shrink by 20% every 15 seconds of elapsed gameplay. The game ends when the timer hits zero — difficulty scales with how long you stay alive.
+            </p>
+            <ul class="text-ink-muted text-sm space-y-2">
+              <li class="flex gap-3"><span class="text-cyan mt-0.5">▸</span> No pauses, no celebrations — pure rhythm</li>
+              <li class="flex gap-3"><span class="text-cyan mt-0.5">▸</span> Zones have a 30-pixel minimum radius floor</li>
+              <li class="flex gap-3"><span class="text-cyan mt-0.5">▸</span> Time-bonus chime plays on every successful hit</li>
+            </ul>
+          </div>
+          <div class="relative aspect-video rounded-lg overflow-hidden screenshot-slot glow-border">
+            <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+              <div class="text-pink/50 font-mono text-xs tracking-widest uppercase mb-2">Screenshot</div>
+              <div class="text-ink-dim font-mono text-xs">./screenshots/mode-c.png</div>
+            </div>
+            <img src="./screenshots/mode-c.png" alt="Mode C gameplay" class="absolute inset-0 w-full h-full object-cover" onerror="this.style.display='none'" />
+          </div>
+        </div>
+
+        <!-- SUPPORTING FEATURES -->
+        <div class="grid md:grid-cols-3 gap-6 pt-8">
+          <div class="p-6 rounded-lg bg-panel/40 glow-border-cyan">
+            <div class="text-cyan font-mono text-xs tracking-widest uppercase mb-3">Attract Mode</div>
+            <h4 class="font-display text-lg font-bold mb-2 text-ink">Synthwave idle loop</h4>
+            <p class="text-ink-muted text-sm leading-relaxed">
+              Perspective grid, scrolling starfield, pulsing energy rings, champion panel showing the current leaderboard top. Optional MP4 idle video plays after a configurable timeout.
+            </p>
+          </div>
+          <div class="p-6 rounded-lg bg-panel/40 glow-border-cyan">
+            <div class="text-cyan font-mono text-xs tracking-widest uppercase mb-3">Operator Menu</div>
+            <h4 class="font-display text-lg font-bold mb-2 text-ink">Hidden-button access</h4>
+            <p class="text-ink-muted text-sm leading-relaxed">
+              Volume, dual-display toggle, leaderboard reset. Hidden from regular players. Settings persist to JSON across restarts.
+            </p>
+          </div>
+          <div class="p-6 rounded-lg bg-panel/40 glow-border-cyan">
+            <div class="text-cyan font-mono text-xs tracking-widest uppercase mb-3">Dual Display</div>
+            <h4 class="font-display text-lg font-bold mb-2 text-ink">3840×1080 composite</h4>
+            <p class="text-ink-muted text-sm leading-relaxed">
+              Left screen renders score / HUD, right screen renders gameplay. Single fullscreen window spanning both LCDs. Operator can toggle single-screen mode at runtime.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ARCHITECTURE -->
+  <section id="architecture" class="py-24 md:py-32">
+    <div class="max-w-5xl mx-auto px-6">
+      <p class="text-pink font-mono text-xs tracking-[0.3em] uppercase mb-4">05 / Architecture</p>
+      <h2 class="font-display text-3xl md:text-5xl font-bold mb-12 text-ink leading-tight">
+        Built to be handed off, not just shipped.
+      </h2>
+
+      <div class="grid md:grid-cols-2 gap-6">
+        <div class="p-6 rounded-lg bg-panel/30 border border-ink-dim/20">
+          <h3 class="font-display text-xl font-bold mb-3 text-cyan">11-state FSM</h3>
+          <p class="text-ink-muted text-sm leading-relaxed">
+            Each state is a <code>BaseState</code> subclass with <code>on_enter</code> / <code>update</code> / <code>render</code> / <code>on_exit</code> lifecycle hooks. The state machine routes transitions centrally and hands off data between states via stashed attributes — no state knows about its neighbours directly.
+          </p>
+        </div>
+        <div class="p-6 rounded-lg bg-panel/30 border border-ink-dim/20">
+          <h3 class="font-display text-xl font-bold mb-3 text-cyan">Hardware-agnostic input</h3>
+          <p class="text-ink-muted text-sm leading-relaxed">
+            Game code calls <code>input_handler.get_events()</code> and gets back a flat list of events. Three independent transport streams (IR touch, USB arcade encoder, dev keyboard) merge into one queue. No state file ever touches a wire protocol.
+          </p>
+        </div>
+        <div class="p-6 rounded-lg bg-panel/30 border border-ink-dim/20">
+          <h3 class="font-display text-xl font-bold mb-3 text-cyan">Config-driven</h3>
+          <p class="text-ink-muted text-sm leading-relaxed">
+            ~320 lines of tunable constants in <code>config.py</code>. Timers, thresholds, colours, layout geometry, file paths, animation speeds — all in one place, inline-documented. Non-engineers on the client team can tune gameplay values without reading game code.
+          </p>
+        </div>
+        <div class="p-6 rounded-lg bg-panel/30 border border-ink-dim/20">
+          <h3 class="font-display text-xl font-bold mb-3 text-cyan">Graceful degradation</h3>
+          <p class="text-ink-muted text-sm leading-relaxed">
+            Missing images render as coloured placeholder shapes, missing audio plays silence, missing idle video is skipped with no error. You can run the game against a completely empty <code>assets/</code> folder and it still boots — critical for partial asset deliveries during art production.
+          </p>
+        </div>
+        <div class="p-6 rounded-lg bg-panel/30 border border-ink-dim/20">
+          <h3 class="font-display text-xl font-bold mb-3 text-cyan">Frame-rate independent</h3>
+          <p class="text-ink-muted text-sm leading-relaxed">
+            All timers use delta time from <code>clock.tick(FPS)</code>. Milestone celebrations, attract animations, zone shrink schedules, and transition countdowns all behave identically whether the cabinet runs at 30 fps or 120 fps.
+          </p>
+        </div>
+        <div class="p-6 rounded-lg bg-panel/30 border border-ink-dim/20">
+          <h3 class="font-display text-xl font-bold mb-3 text-cyan">Dual-display compositor</h3>
+          <p class="text-ink-muted text-sm leading-relaxed">
+            Two 1920×1080 render surfaces, composited each frame into one 3840×1080 fullscreen window. States receive both surfaces in their <code>render()</code> call and draw to each as needed. Single-display dev mode aliases both pointers to one surface.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CHALLENGES -->
+  <section class="py-24 md:py-32 border-t border-pink/10 bg-gradient-to-b from-transparent via-panel/20 to-transparent">
+    <div class="max-w-4xl mx-auto px-6">
+      <p class="text-pink font-mono text-xs tracking-[0.3em] uppercase mb-4">06 / Challenges Solved</p>
+      <h2 class="font-display text-3xl md:text-5xl font-bold mb-12 text-ink leading-tight">
+        The interesting problems.
+      </h2>
+
+      <div class="space-y-10">
+        <div class="border-l-2 border-pink pl-6">
+          <h3 class="font-display text-xl md:text-2xl font-bold mb-3 text-ink">Shipping game code ahead of finished hardware</h3>
+          <p class="text-ink-muted leading-relaxed">
+            The game had to be code-complete and testable before the physical cabinet existed. I built a dev keyboard backend that simulates every event the real hardware would eventually send — coin inserts, target hits at predefined coordinates, operator menu access, reset. The entire game loop was exercisable from a laptop. When the firmware team later wired the real hardware, it plugged into the same event interface with zero game-code changes.
+          </p>
+        </div>
+        <div class="border-l-2 border-cyan pl-6">
+          <h3 class="font-display text-xl md:text-2xl font-bold mb-3 text-ink">Supporting any USB arcade encoder, no drivers</h3>
+          <p class="text-ink-muted leading-relaxed">
+            Arcade button encoders fall into two camps — keyboard-emulating and gamepad-style. I went with the gamepad path because it keeps physical buttons cleanly separated from the dev keyboard namespace and avoids USB n-key-rollover limits. The handler supports discrete buttons via <code>JOYBUTTONDOWN</code>, direction sticks via <code>JOYHATMOTION</code>, and hot-plug recovery via <code>JOYDEVICEADDED</code> / <code>JOYDEVICEREMOVED</code> — unplug mid-game and the dev keyboard takes over, replug and the buttons come back.
+          </p>
+        </div>
+        <div class="border-l-2 border-green pl-6">
+          <h3 class="font-display text-xl md:text-2xl font-bold mb-3 text-ink">Dual-display compositing with runtime toggle</h3>
+          <p class="text-ink-muted leading-relaxed">
+            The cabinet runs two physical LCDs as a single 3840×1080 fullscreen window. In dev, the same code runs on one 1920×1080 monitor with <code>DUAL_DISPLAY=False</code>. The rendering architecture uses two render surfaces; in single-display mode, both pointers alias to the same surface so state code doesn't branch on display mode. The operator can toggle at runtime via the operator menu.
+          </p>
+        </div>
+        <div class="border-l-2 border-purple pl-6">
+          <h3 class="font-display text-xl md:text-2xl font-bold mb-3 text-ink">Documentation as a first-class deliverable</h3>
+          <p class="text-ink-muted leading-relaxed">
+            The firmware team needed an integration contract, not a tutorial. I wrote the hardware integration guide peer-to-peer — interfaces, event semantics, calibration steps, edge cases, troubleshooting — assuming the reader knew USB HID, <code>pygame.joystick</code>, and Windows device management. Same standard for the asset delivery spec: exact filenames, formats, dimensions, fallback behaviour. Partial deliveries never block the build.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- OUTCOME -->
+  <section id="outcome" class="py-24 md:py-32">
+    <div class="max-w-5xl mx-auto px-6">
+      <p class="text-pink font-mono text-xs tracking-[0.3em] uppercase mb-4">07 / Outcome</p>
+      <h2 class="font-display text-3xl md:text-5xl font-bold mb-12 text-ink leading-tight">
+        Delivered. On time. Handed off cleanly.
+      </h2>
+
+      <div class="grid md:grid-cols-3 gap-8 mb-16">
+        <div>
+          <div class="font-display text-5xl md:text-6xl font-bold text-pink glow-pink mb-3">11</div>
+          <p class="text-ink-muted leading-relaxed">Game states, all hooked up and transitioning correctly</p>
+        </div>
+        <div>
+          <div class="font-display text-5xl md:text-6xl font-bold text-cyan glow-cyan mb-3">3</div>
+          <p class="text-ink-muted leading-relaxed">Distinct game modes, each with its own mechanics and feel</p>
+        </div>
+        <div>
+          <div class="font-display text-5xl md:text-6xl font-bold text-green glow-green mb-3">100%</div>
+          <p class="text-ink-muted leading-relaxed">M1 deliverables shipped on schedule</p>
+        </div>
+      </div>
+
+      <div class="p-8 md:p-12 rounded-lg bg-panel/40 glow-border">
+        <div class="text-ink-muted leading-relaxed text-lg space-y-4">
+          <p>
+            The game shipped with all M1 deliverables complete: boot and attract screens, mode select, all three gameplay modes, result screen, Hall of Fame entry and leaderboard, operator menu, and the full reset flow. The production input abstraction layer landed alongside the game itself, with the hardware integration contract ready for the firmware team to wire against.
+          </p>
+          <p>
+            The client's firmware team was able to pick up the hardware integration contract and begin wiring physical components independently, without waiting on further game-side changes. Dev testing on a plain keyboard and mouse continued in parallel.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIAL -->
+  <section class="py-24 md:py-32 border-t border-pink/10">
+    <div class="max-w-4xl mx-auto px-6 text-center">
+      <p class="text-pink font-mono text-xs tracking-[0.3em] uppercase mb-8">08 / Testimonial</p>
+      <blockquote class="font-display text-2xl md:text-4xl font-medium text-ink leading-snug mb-10">
+        <span class="text-pink glow-pink">&ldquo;</span>
+        {{TESTIMONIAL_QUOTE — drop a 1 to 3 sentence quote from the client here. Cover what stood out about working together, or what outcome mattered most to them.}}
+        <span class="text-pink glow-pink">&rdquo;</span>
+      </blockquote>
+      <div class="flex items-center justify-center gap-4">
+        <div class="w-12 h-12 rounded-full bg-gradient-to-br from-pink to-purple glow-border"></div>
+        <div class="text-left">
+          <p class="text-ink font-semibold">{{TESTIMONIAL_NAME}}</p>
+          <p class="text-ink-muted text-sm">{{TESTIMONIAL_ROLE}}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER / CTA -->
+  <footer class="py-20 border-t border-pink/10 bg-base-deeper">
+    <div class="max-w-4xl mx-auto px-6 text-center">
+      <h2 class="font-display text-3xl md:text-4xl font-bold mb-6 text-ink">Want something like this built?</h2>
+      <p class="text-ink-muted text-lg mb-10 max-w-2xl mx-auto">
+        I take on complex, end-to-end engagements where the code has to ship, the hardware has to work, and the handoff has to land cleanly.
+      </p>
+      <div class="flex flex-wrap gap-4 justify-center mb-12">
+        <a href="mailto:{{YOUR_EMAIL}}" class="px-8 py-4 rounded-full bg-pink text-base font-semibold hover:bg-pink/90 transition-colors glow-border">
+          Get in touch
+        </a>
+        <a href="{{GITHUB_REPO_URL}}" class="px-8 py-4 rounded-full border border-cyan/40 text-cyan hover:bg-cyan/10 transition-colors">
+          View on GitHub
+        </a>
+      </div>
+      <p class="text-ink-dim text-sm font-mono">&copy; 2026 Sheikh Abdullah Bin Zahid &middot; Built with Tailwind &middot; Hosted on GitHub Pages</p>
+    </div>
+  </footer>
+</body>
+</html>
