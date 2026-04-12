@@ -56,6 +56,33 @@
     .screenshot-slot {
       background: linear-gradient(135deg, rgba(22, 10, 45, 0.95), rgba(12, 5, 24, 0.95));
     }
+    /* CRT scanline overlay — arcade cabinet aesthetic */
+    .crt-overlay {
+      position: relative;
+    }
+    .crt-overlay::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        to bottom,
+        transparent 0px,
+        transparent 2px,
+        rgba(0, 0, 0, 0.15) 2px,
+        rgba(0, 0, 0, 0.15) 4px
+      );
+      pointer-events: none;
+      border-radius: inherit;
+    }
+    .crt-overlay::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at center, transparent 50%, rgba(6, 2, 15, 0.4) 100%);
+      pointer-events: none;
+      border-radius: inherit;
+      z-index: 1;
+    }
     .nav-backdrop { backdrop-filter: blur(12px); }
     /* Give code tags inline styling without repeating classes */
     .prose-code code {
@@ -251,10 +278,17 @@
         Three distinct modes, one shared arcade feel.
       </h2>
 
-      <div class="space-y-20">
+      <div class="space-y-28">
         <!-- MODE A -->
-        <div class="grid md:grid-cols-2 gap-12 items-center">
-          <div>
+        <div>
+          <div class="relative rounded-lg overflow-hidden screenshot-slot glow-border crt-overlay">
+            <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+              <div class="text-pink/50 font-mono text-xs tracking-widest uppercase mb-2">Screenshot</div>
+              <div class="text-ink-dim font-mono text-xs">./screenshots/mode-a.png</div>
+            </div>
+            <img src="./screenshots/mode-a.png" alt="Mode A gameplay — dual-display Hall of Fame mode" class="w-full h-auto block" onerror="this.style.display='none'" />
+          </div>
+          <div class="mt-8 max-w-2xl">
             <p class="text-cyan font-mono text-xs tracking-widest uppercase mb-3">Mode A</p>
             <h3 class="font-display text-2xl md:text-3xl font-bold mb-4 text-ink">Hall of Fame — solo timed</h3>
             <p class="text-ink-muted leading-relaxed mb-4">
@@ -266,18 +300,18 @@
               <li class="flex gap-3"><span class="text-cyan mt-0.5">▸</span> Persistent leaderboard across sessions</li>
             </ul>
           </div>
-          <div class="relative aspect-video rounded-lg overflow-hidden screenshot-slot glow-border">
-            <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-              <div class="text-pink/50 font-mono text-xs tracking-widest uppercase mb-2">Screenshot</div>
-              <div class="text-ink-dim font-mono text-xs">./screenshots/mode-a.png</div>
-            </div>
-            <img src="./screenshots/mode-a.png" alt="Mode A gameplay" class="absolute inset-0 w-full h-full object-cover" onerror="this.style.display='none'" />
-          </div>
         </div>
 
         <!-- MODE B -->
-        <div class="grid md:grid-cols-2 gap-12 items-center">
-          <div class="md:order-2">
+        <div>
+          <div class="relative rounded-lg overflow-hidden screenshot-slot glow-border crt-overlay">
+            <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+              <div class="text-pink/50 font-mono text-xs tracking-widest uppercase mb-2">Screenshot</div>
+              <div class="text-ink-dim font-mono text-xs">./screenshots/mode-b.png</div>
+            </div>
+            <img src="./screenshots/mode-b.png" alt="Mode B gameplay — dual-display Versus mode" class="w-full h-auto block" onerror="this.style.display='none'" />
+          </div>
+          <div class="mt-8 max-w-2xl ml-auto">
             <p class="text-cyan font-mono text-xs tracking-widest uppercase mb-3">Mode B</p>
             <h3 class="font-display text-2xl md:text-3xl font-bold mb-4 text-ink">Versus — 2 players, simultaneous</h3>
             <p class="text-ink-muted leading-relaxed mb-4">
@@ -289,18 +323,18 @@
               <li class="flex gap-3"><span class="text-cyan mt-0.5">▸</span> Designed for loud, competitive play</li>
             </ul>
           </div>
-          <div class="relative aspect-video rounded-lg overflow-hidden screenshot-slot glow-border md:order-1">
-            <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-              <div class="text-pink/50 font-mono text-xs tracking-widest uppercase mb-2">Screenshot</div>
-              <div class="text-ink-dim font-mono text-xs">./screenshots/mode-b.png</div>
-            </div>
-            <img src="./screenshots/mode-b.png" alt="Mode B gameplay" class="absolute inset-0 w-full h-full object-cover" onerror="this.style.display='none'" />
-          </div>
         </div>
 
         <!-- MODE C -->
-        <div class="grid md:grid-cols-2 gap-12 items-center">
-          <div>
+        <div>
+          <div class="relative rounded-lg overflow-hidden screenshot-slot glow-border crt-overlay">
+            <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+              <div class="text-pink/50 font-mono text-xs tracking-widest uppercase mb-2">Screenshot</div>
+              <div class="text-ink-dim font-mono text-xs">./screenshots/mode-c.png</div>
+            </div>
+            <img src="./screenshots/mode-c.png" alt="Mode C gameplay — dual-display Rapid Fire mode" class="w-full h-auto block" onerror="this.style.display='none'" />
+          </div>
+          <div class="mt-8 max-w-2xl">
             <p class="text-cyan font-mono text-xs tracking-widest uppercase mb-3">Mode C</p>
             <h3 class="font-display text-2xl md:text-3xl font-bold mb-4 text-ink">Rapid Fire — survive the shrink</h3>
             <p class="text-ink-muted leading-relaxed mb-4">
@@ -311,13 +345,6 @@
               <li class="flex gap-3"><span class="text-cyan mt-0.5">▸</span> Zones have a 30-pixel minimum radius floor</li>
               <li class="flex gap-3"><span class="text-cyan mt-0.5">▸</span> Time-bonus chime plays on every successful hit</li>
             </ul>
-          </div>
-          <div class="relative aspect-video rounded-lg overflow-hidden screenshot-slot glow-border">
-            <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-              <div class="text-pink/50 font-mono text-xs tracking-widest uppercase mb-2">Screenshot</div>
-              <div class="text-ink-dim font-mono text-xs">./screenshots/mode-c.png</div>
-            </div>
-            <img src="./screenshots/mode-c.png" alt="Mode C gameplay" class="absolute inset-0 w-full h-full object-cover" onerror="this.style.display='none'" />
           </div>
         </div>
 
@@ -498,7 +525,7 @@
         I take on complex, end-to-end engagements where the code has to ship, the hardware has to work, and the handoff has to land cleanly.
       </p>
       <div class="flex flex-wrap gap-4 justify-center mb-12">
-        <a href="mailto:{{YOUR_EMAIL}}" class="px-8 py-4 rounded-full bg-pink text-base font-semibold hover:bg-pink/90 transition-colors glow-border">
+        <a href="mailto:sheikhabdullah2240@gmail.com" class="px-8 py-4 rounded-full bg-pink text-base font-semibold hover:bg-pink/90 transition-colors glow-border">
           Get in touch
         </a>
         <a href="{{GITHUB_REPO_URL}}" class="px-8 py-4 rounded-full border border-cyan/40 text-cyan hover:bg-cyan/10 transition-colors">
