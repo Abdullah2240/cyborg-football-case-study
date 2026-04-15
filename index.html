@@ -498,21 +498,20 @@
     </div>
   </section>
 
-  <!-- TESTIMONIAL -->
+  <!-- REFLECTIONS -->
   <section class="py-24 md:py-32 border-t border-pink/10">
-    <div class="max-w-4xl mx-auto px-6 text-center">
-      <p class="text-pink font-mono text-xs tracking-[0.3em] uppercase mb-8">08 / Testimonial</p>
-      <blockquote class="font-display text-2xl md:text-4xl font-medium text-ink leading-snug mb-10">
-        <span class="text-pink glow-pink">&ldquo;</span>
-        {{TESTIMONIAL_QUOTE — drop a 1 to 3 sentence quote from the client here. Cover what stood out about working together, or what outcome mattered most to them.}}
-        <span class="text-pink glow-pink">&rdquo;</span>
-      </blockquote>
-      <div class="flex items-center justify-center gap-4">
-        <div class="w-12 h-12 rounded-full bg-gradient-to-br from-pink to-purple glow-border"></div>
-        <div class="text-left">
-          <p class="text-ink font-semibold">{{TESTIMONIAL_NAME}}</p>
-          <p class="text-ink-muted text-sm">{{TESTIMONIAL_ROLE}}</p>
-        </div>
+    <div class="max-w-4xl mx-auto px-6">
+      <p class="text-pink font-mono text-xs tracking-[0.3em] uppercase mb-4">08 / Reflections</p>
+      <h2 class="font-display text-3xl md:text-5xl font-bold mb-12 text-ink leading-tight">
+        What the project taught me.
+      </h2>
+      <div class="space-y-6 text-lg text-ink-muted leading-relaxed">
+        <p>
+          The most interesting constraint on this project was that the game software had to land before the physical cabinet existed. The IR touch frame, the USB arcade encoder, the future coin acceptor &mdash; none of it was in my hands while I was writing code. That forced the input abstraction layer to be real from day one, not retrofitted later. The lesson I'd take into any similar engagement: invest the time to define the interface between game logic and hardware transport early, especially when you're the only one touching the code.
+        </p>
+        <p>
+          The second lesson was about documentation weight. A 169-test pytest suite and a peer-to-peer hardware integration contract aren't line items you slip in at the end &mdash; they're what lets the project survive being handed off. If I had to do it again on a tighter timeline, I'd cut visual polish before I'd cut test coverage or doc quality. Polish is replaceable; a codebase another engineer can't read isn't.
+        </p>
       </div>
     </div>
   </section>
@@ -524,12 +523,9 @@
       <p class="text-ink-muted text-lg mb-10 max-w-2xl mx-auto">
         I take on complex, end-to-end engagements where the code has to ship, the hardware has to work, and the handoff has to land cleanly.
       </p>
-      <div class="flex flex-wrap gap-4 justify-center mb-12">
+      <div class="flex justify-center mb-12">
         <a href="mailto:sheikhabdullah2240@gmail.com" class="px-8 py-4 rounded-full bg-pink text-base font-semibold hover:bg-pink/90 transition-colors glow-border">
           Get in touch
-        </a>
-        <a href="{{GITHUB_REPO_URL}}" class="px-8 py-4 rounded-full border border-cyan/40 text-cyan hover:bg-cyan/10 transition-colors">
-          View on GitHub
         </a>
       </div>
       <p class="text-ink-dim text-sm font-mono">&copy; 2026 Sheikh Abdullah Bin Zahid &middot; Built with Tailwind &middot; Hosted on GitHub Pages</p>
